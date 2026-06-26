@@ -3,30 +3,25 @@ import axios from "axios";
 import Card from "../Card/Card";
 import styles from "./Section.module.css";
 
-function Section() {
+function Section({ title, endpoint }) {
   const [albums, setAlbums] = useState([]);
-
-  useEffect(() => {
-    fetchAlbums();
-  }, []);
-
+useEffect(() => {
   async function fetchAlbums() {
     try {
-      const response = await axios.get(
-        "https://qtify-backend.labs.crio.do/albums/top"
-      );
-
+      const response = await axios.get(endpoint);
       setAlbums(response.data);
     } catch (err) {
       console.log(err);
     }
   }
 
+  fetchAlbums();
+}, [endpoint]);
   return (
     <div className={styles.section}>
       <div className={styles.header}>
-        <h2>Top Albums</h2>
-        <button>Collapse</button>
+        <h2>{title}</h2>
+        <button>Show All</button>
       </div>
 
       <div className={styles.grid}>
