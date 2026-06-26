@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.search {
+  width: 500px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-black);
+  border-radius: 8px 0 0 8px;
+  font-size: 16px;
+}
+
+.searchButton {
+  width: 60px;
+  height: 40px;
+  border: 1px solid var(--color-black);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

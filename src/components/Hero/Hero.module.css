@@ -1,0 +1,18 @@
+.hero {
+  background-color: var(--color-black);
+  height: 270px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  text-align: center;
+}
+
+.hero h1 {
+  color: white;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.5;
+}
