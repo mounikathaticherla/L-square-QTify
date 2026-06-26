@@ -1,0 +1,21 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.prev,
+.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  cursor: pointer;
+}
+
+.prev {
+  left: -25px;
+}
+
+.next {
+  right: -25px;
+}
