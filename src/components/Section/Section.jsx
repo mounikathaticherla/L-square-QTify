@@ -3,10 +3,39 @@ import axios from "axios";
 import Card from "../Card/Card";
 import styles from "./Section.module.css";
 import Carousel from "../Carousel/Carousel";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
-function Section({ title, endpoint }) {
+function Section({ title, endpoint, type, renderItem,
+  showButton = true, }) {
   const [albums, setAlbums] = useState([]);
   const [showAll, setShowAll] = useState(false);
+  const [genres, setGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState("all");
+
+const toggle = () => {
+  setShowAll(!showAll);
+};
+  useEffect(() => {
+  if (type !== "song") return;
+
+  async function fetchGenres() {
+    try {
+      const res = await axios.get(
+        "https://qtify-backend.labs.crio.do/genres"
+      );
+
+      setGenres([
+        { key: "all", label: "All" },
+        ...res.data.data,
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  fetchGenres();
+}, [type]);
 useEffect(() => {
   async function fetchAlbums() {
     try {
@@ -19,40 +48,89 @@ useEffect(() => {
 
   fetchAlbums();
 }, [endpoint]);
+const filteredData =
+  type === "song"
+    ? selectedGenre === "all"
+      ? albums
+      : albums.filter(
+          (song) => song.genre.key === selectedGenre
+        )
+    : albums;
   return (
+    <div>
+    {type === "song" && <div className={styles.line}></div>}
     <div className={styles.section}>
-      <div className={styles.header}>
-        <h2>{title}</h2>
-        <button
-  onClick={() => setShowAll(!showAll)}
+    <div className={styles.header}>
+     <h2>{title}</h2>
+  
+     {showButton && (
+  <button onClick={toggle}>
+    {showAll ? "Collapse" : "Show All"}
+  </button>
+)}
+    </div>
+    {type === "song" && (
+  <Tabs
+  value={selectedGenre}
+  onChange={(e, value) => setSelectedGenre(value)}
+  className={styles.tabs}
 >
-  {showAll ? "Collapse" : "Show All"}
-</button>
-      </div>
-
-      {showAll ? (
-  <div className={styles.grid}>
-    {albums.map((album) => (
-      <Card
-        key={album.id}
-        image={album.image}
-        follows={album.follows}
-        title={album.title}
+    {genres.map((genre) => (
+      <Tab
+        key={genre.key}
+        value={genre.key}
+        label={genre.label}
       />
     ))}
-  </div>
+  </Tabs>
+)}
+
+      {showButton ? (
+  showAll ? (
+    <div className={styles.grid}>
+      {filteredData.map((album) => (
+        <Card
+        key={album.id}
+image={album.image}
+title={album.title}
+follows={album.follows}
+likes={album.likes}
+type={type}
+/>
+      ))}
+    </div>
+  ) : (
+    <Carousel
+      data={filteredData}
+      renderItem={(album) => (
+        <Card
+        key={album.id}
+image={album.image}
+title={album.title}
+follows={album.follows}
+likes={album.likes}
+type={type}
+/>
+      )}
+    />
+  )
 ) : (
   <Carousel
-    data={albums}
+    data={filteredData}
     renderItem={(album) => (
       <Card
-        image={album.image}
-        follows={album.follows}
-        title={album.title}
-      />
+      key={album.id}
+image={album.image}
+title={album.title}
+follows={album.follows}
+likes={album.likes}
+type={type}
+/>
     )}
   />
 )}
+
+    </div>
     </div>
   );
 }
